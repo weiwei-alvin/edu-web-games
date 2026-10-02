@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Body Parts - 國中英語互動學習教材</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .pulse-subtle {
+      animation: pulseSubtle 2s infinite ease-in-out;
+    }
+    @keyframes pulseSubtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.95; transform: scale(1.02); }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-teal-100 selection:text-teal-900">
+
+  <header class="w-full bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-lg bg-teal-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+          BP
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Body Parts 互動測驗</h1>
+          <p class="text-xs text-slate-500">Junior High ESL Vocabulary Unit</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span id="headerStatusBadge" class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+          8 個重點單字
+        </span>
+        <button id="btnSoundTest" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-md font-medium transition flex items-center space-x-1" title="測試語音輸出">
+          <span>🔊 發音測試</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 flex-1 flex flex-col justify-center">
+
+    <!-- 步驟 1: AI 圖片資產生成與就緒狀態畫面 -->
+    <section id="assetSection" class="w-full bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm transition-all duration-300">
+      <div class="max-w-xl mx-auto text-center">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-teal-50 text-teal-600 mb-4 border border-teal-100">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-2">準備教學插圖資產</h2>
+        <p class="text-sm text-slate-600 mb-6">
+          依照規格，本課 8 個單字（head, shoulder, knee, toe, arm, stomach, leg, hand）將生成風格一致之國中教科書半寫實點陣插圖素材。
+        </p>
+
+        <!-- 進度條 -->
+        <div class="mb-4">
+          <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1.5">
+            <span id="assetStatusText">等待啟動...</span>
+            <span id="assetProgressPercent">0 / 8</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-200">
+            <div id="assetProgressBar" class="bg-teal-600 h-full rounded-full transition-all duration-500 w-0"></div>
+          </div>
+        </div>
+
+        <!-- 記錄訊息 -->
+        <div id="assetLogBox" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-left text-slate-600 h-24 overflow-y-auto mb-6 custom-scrollbar font-mono leading-relaxed">
+          系統準備中... 點選下方按鈕開始檢查或生成素材。
+        </div>
+
+        <!-- 8 個部位縮圖預覽區 -->
+        <div id="assetGrid" class="grid grid-cols-4 sm:grid-cols-8 gap-2 mb-6">
+          <!-- 動態注入各單字預覽格子 -->
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button id="btnStartGeneration" class="w-full sm:w-auto px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl shadow-sm transition active:scale-95 flex items-center justify-center space-x-2">
+            <span>開始生成 8 個單字教材插圖</span>
+          </button>
+          <button id="btnEnterGame" class="hidden w-full sm:w-auto px-8 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl shadow-md transition active:scale-95">
+            進入測驗 (10 題) →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 步驟 2: 測驗遊戲互動主畫面 -->
+    <section id="gameSection" class="hidden w-full max-w-2xl mx-auto flex flex-col gap-5">
+      <!-- 頂部狀態列：題號、題型與目前得分 -->
+      <div class="bg-white rounded-2xl p-4 sm:px-6 border border-slate-200 shadow-xs flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <span class="text-xs font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-100" id="questionTypeBadge">
+            題型載入中...
+          </span>
+          <span class="text-sm font-semibold text-slate-600">
+            第 <span id="currentQuestionNum" class="text-slate-900 font-bold">1</span> / 10 題
+          </span>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-slate-500 font-medium">目前得分</span>
+          <div class="text-lg font-black text-slate-900 leading-none" id="currentScoreDisplay">0</div>
+        </div>
+      </div>
+
+      <!-- 題目卡片主體 -->
+      <div class="bg-white rounded-2xl p-5 sm:p-7 border border-slate-200 shadow-sm relative overflow-hidden flex flex-col items-center">
+        <!-- 題型提示說明 -->
+        <h3 id="questionPromptTitle" class="text-base sm:text-lg font-bold text-slate-900 text-center mb-5">
+          題目指示載入中
+        </h3>
+
+        <!-- 中央主要展示區 (可切換：大圖、大單字、或大語音按鈕) -->
+        <div id="stimulusContainer" class="w-full flex justify-center items-center mb-6 min-h-[220px]">
+          <!-- 動態載入題目刺激源 (如插圖、單字卡、大播放器) -->
+        </div>
+
+        <!-- 作答選項區 (4 選項) -->
+        <div id="optionsContainer" class="w-full">
+          <!-- 動態載入文字選項或圖片選項或語音按鈕選項 -->
+        </div>
+
+        <!-- 即時反饋欄 -->
+        <div id="feedbackBanner" class="w-full mt-5 hidden rounded-xl p-4 border transition-all duration-200">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center space-x-3">
+              <span id="feedbackIcon" class="text-2xl font-bold"></span>
+              <div>
+                <p id="feedbackTitle" class="text-sm font-bold"></p>
+                <p id="feedbackDetail" class="text-xs mt-0.5"></p>
+              </div>
+            </div>
+            <button id="btnNextQuestion" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl shadow-xs transition active:scale-95">
+              下一題 →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 步驟 3: 遊戲結算總成績畫面 -->
+    <section id="resultSection" class="hidden w-full max-w-lg mx-auto bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-md text-center">
+      <div class="w-16 h-16 rounded-2xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+        ✓
+      </div>
+      <h2 class="text-2xl font-bold text-slate-900 mb-1">測驗完成！</h2>
+      <p class="text-sm text-slate-500 mb-6">Unit: Body Parts 綜合能力診斷</p>
+
+      <div class="grid grid-cols-3 gap-3 mb-6">
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="text-xs text-slate-500 mb-1">最終總分</div>
+          <div id="finalScore" class="text-xl sm:text-2xl font-black text-slate-900">0</div>
+        </div>
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="text-xs text-slate-500 mb-1">答對題數</div>
+          <div id="finalCorrectCount" class="text-xl sm:text-2xl font-black text-teal-600">0 / 10</div>
+        </div>
+        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div class="text-xs text-slate-500 mb-1">正確率</div>
+          <div id="finalAccuracy" class="text-xl sm:text-2xl font-black text-indigo-600">0%</div>
+        </div>
+      </div>
+
+      <div id="resultFeedbackText" class="p-3.5 bg-slate-50 rounded-xl text-xs text-slate-700 border border-slate-200 mb-6 font-medium">
+        持續練習能讓單字反應更加熟練！
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <button id="btnPlayAgain" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl shadow-xs transition active:scale-95">
+          再玩一次
+        </button>
+        <button id="btnReviewAssets" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-xl border border-slate-300 transition active:scale-95">
+          檢視 8 個單字教材圖
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="w-full bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>國中英語核心單字互動教室 · Body Parts Unit</span>
+      <span>純點陣 AI 教材插圖 · 標準 ESL 自然發音</span>
+    </div>
+  </footer>
+
+  <script>
+    // 嚴格定義的 8 個指定單字清單與中文說明
+    const VOCABULARY = [
+      {
+        id: 'head',
+        word: 'head',
+        zh: '頭部',
+        prompt: 'Clean educational textbook illustration for junior high school English biology curriculum. Natural human adolescent head and face, clear facial features and hair, neck visible, neutral calm expression, realistic proportions, white solid background, high detail educational rendering, no text, no labels, no cartoon, no arrows.'
+      },
+      {
+        id: 'shoulder',
+        word: 'shoulder',
+        zh: '肩膀',
+        prompt: 'Clean educational textbook illustration for junior high school English biology curriculum. Upper torso of a person in simple athletic t-shirt, clearly highlighting the shoulder joint and collarbone structure as the primary focal point, natural human posture, neutral white solid background, no text, no labels, no cartoon.'
+      },
+      {
+        id: 'knee',
+        word: 'knee',
+        zh: '膝蓋',
+        prompt: 'Clean educational textbook illustration for junior high school English biology curriculum. A clear view of a human leg focusing directly on the knee joint and patella, showing lower thigh and upper shin, standing posture, clean anatomical framing, neutral white solid background, no text, no labels, no cartoon.'
+      },
+      {
+        id: 'toe',
+        word: 'toe',
+        zh: '腳趾',
+        prompt: 'Clean educational textbook illustration for junior high school English biology curriculum. Detailed close-up of a bare human foot focusing distinctly on the five toes, natural skin tone and clean toenails, neutral white solid background, dignified educational style, no text, no labels, no cartoon.'
+      },
+      {
+        id: 'arm',
+        word: 'arm',
+        zh: '手臂',
+        prompt: 'Clean educational textbook illustration for junior high school English biology curriculum. The entire human arm clearly presented from shoulder socket, through the elbow, down to the wrist, relaxed natural posture, neutral white solid background, educational textbook art, no text, no labels, no cartoon.'
+      },
+      {
+        id: 'stomach',
+        word: 'stomach',
+        zh: '腹部/肚子',
+        prompt: 'Clean educational textbook illustration for junior high school English biology curriculum. Frontal view of the human midsection/torso focusing specifically on the stomach and abdominal area, navel clearly visible, neutral white solid background, clear educational focus, no text, no labels, no cartoon.'
+      },
+      {
+        id: 'leg',
+        word: 'leg',
+        zh: '腿部',
+        prompt: 'Clean educational textbook illustration for junior high school English biology curriculum. Full human lower limb from upper hip joint, thigh, knee, down to ankle and foot, natural standing pose, the full leg is the unmistakable center of the composition, neutral white solid background, no text, no labels, no cartoon.'
+      },
+      {
+        id: 'hand',
+        word: 'hand',
+        zh: '手部',
+        prompt: 'Clean educational textbook illustration for junior high school English biology curriculum. A clean open human hand viewed from the palm or front with all five fingers cleanly separated and extended, showing palm lines, wrist attached, neutral white solid background, no text, no labels, no cartoon.'
+      }
+    ];
+
+    // 全局快取與遊戲狀態
+    const STORAGE_KEY = 'junior_high_body_parts_images_cache_v2';
+    let imageAssets = {}; // key: word, value: base64 Data URL (PNG)
+    let isGenerating = false;
+
+    let gameState = {
+      roundCount: 10,
+      currentQuestionIndex: 0,
+      score: 0,
+      correctCount: 0,
+      questions: [],
+      currentQuestion: null,
+      isAnswered: false,
+      audioOptionElements: {}
+    };
+
+    // 英文語音發音器 (使用原生 SpeechSynthesis，精準度高且零延遲)
+    function playWordAudio(word, rate = 0.9) {
+      if (!('speechSynthesis' in window)) {
+        logMessage("您的瀏覽器不支援 SpeechSynthesis 語音合成。");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.lang = 'en-US';
+      utterance.rate = rate;
+      utterance.pitch = 1.0;
+
+      // 嘗試挑選合適的英文語音
+      const voices = window.speechSynthesis.getVoices();
+      const naturalEnVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel')));
+      if (naturalEnVoice) {
+        utterance.voice = naturalEnVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // 瀏覽器載入可用語音
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+
+    // Web Audio 合成音效反饋
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(success) {
+      try {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+        if (success) {
+          // 清脆悅耳的二段上升音
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); // E5
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else {
+          // 沉穩低音提示
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(220, now); // A3
+          osc.frequency.exponentialRampToValueAtTime(174.6, now + 0.15); // F3
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        }
+      } catch (e) {
+        // 音訊上下文受阻時靜默
+      }
+    }
+
+    const assetLogBox = document.getElementById('assetLogBox');
+    function logMessage(msg) {
+      const time = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+      const line = document.createElement('div');
+      line.textContent = `[${time}] ${msg}`;
+      assetLogBox.appendChild(line);
+      assetLogBox.scrollTop = assetLogBox.scrollHeight;
+    }
+
+    function initAssetGrid() {
+      const grid = document.getElementById('assetGrid');
+      grid.innerHTML = '';
+      VOCABULARY.forEach(item => {
+        const div = document.createElement('div');
+        div.id = `thumb-box-${item.id}`;
+        div.className = 'flex flex-col items-center p-2 rounded-xl bg-slate-50 border border-slate-200 text-center transition';
+        div.innerHTML = `
+          <div class="w-full aspect-square bg-slate-200 rounded-lg flex items-center justify-center overflow-hidden mb-1.5 border border-slate-300 relative">
+            <span class="text-[10px] text-slate-400 font-mono">未生成</span>
+            <img id="thumb-img-${item.id}" class="w-full h-full object-cover hidden" alt="${item.word}" />
+          </div>
+          <span class="text-xs font-bold text-slate-700">${item.word}</span>
+          <span class="text-[10px] text-slate-400">${item.zh}</span>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    // 更新各單字縮圖與進度
+    function updateThumbnails() {
+      let readyCount = 0;
+      VOCABULARY.forEach(item => {
+        const img = document.getElementById(`thumb-img-${item.id}`);
+        const box = document.getElementById(`thumb-box-${item.id}`);
+        if (imageAssets[item.id]) {
+          readyCount++;
+          if (img) {
+            img.src = imageAssets[item.id];
+            img.classList.remove('hidden');
+          }
+          if (box) {
+            box.classList.remove('bg-slate-50');
+            box.classList.add('bg-teal-50/50', 'border-teal-200');
+          }
+        }
+      });
+
+      const percent = Math.round((readyCount / VOCABULARY.length) * 100);
+      document.getElementById('assetProgressBar').style.width = `${percent}%`;
+      document.getElementById('assetProgressPercent').textContent = `${readyCount} / ${VOCABULARY.length}`;
+
+      if (readyCount === VOCABULARY.length) {
+        document.getElementById('assetStatusText').textContent = '所有 8 張高畫質點陣插圖已就緒！';
+        document.getElementById('btnStartGeneration').classList.add('hidden');
+        document.getElementById('btnEnterGame').classList.remove('hidden');
+      } else {
+        document.getElementById('assetStatusText').textContent = `已就緒 ${readyCount} / 8 張素材`;
+      }
+    }
+
+    // 呼叫 gemini-3.1-flash-image 生成單字點陣插圖
+    async function generateImageForWord(item, retryCount = 0) {
+      const apiKey = ""; // Canvas 執行期會自動注入 API Key
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{
+          role: 'user',
+          parts: [{ text: item.prompt }]
+        }],
+        generationConfig: {
+          responseModalities: ['IMAGE'],
+          imageConfig: {
+            aspectRatio: "1:1"
+          }
+        }
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+
+        const data = await response.json();
+        const part = data?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+        if (!part || !part.inlineData || !part.inlineData.data) {
+          throw new Error("模型未回傳有效的圖片資產");
+        }
+
+        const mime = part.inlineData.mimeType || 'image/png';
+        const dataUrl = `data:${mime};base64,${part.inlineData.data}`;
+        return dataUrl;
+      } catch (err) {
+        if (retryCount < 2) {
+          const delay = Math.pow(2, retryCount) * 1500;
+          logMessage(`[重試] ${item.word} 生成遭遇異常 (${err.message})，${delay / 1000}秒後重試...`);
+          await new Promise(res => setTimeout(res, delay));
+          return generateImageForWord(item, retryCount + 1);
+        }
+        throw err;
+      }
+    }
+
+    // 依序執行 8 個單字生成流程
+    async function startBatchGeneration() {
+      if (isGenerating) return;
+      isGenerating = true;
+
+      const btnGen = document.getElementById('btnStartGeneration');
+      btnGen.disabled = true;
+      btnGen.classList.add('opacity-50', 'cursor-not-allowed');
+      btnGen.textContent = '正在生成教材插圖...';
+
+      logMessage('開始生成 8 個 Body Parts 教科書插圖素材...');
+
+      for (let i = 0; i < VOCABULARY.length; i++) {
+        const item = VOCABULARY[i];
+        if (imageAssets[item.id]) {
+          logMessage(`單字 [${item.word}] 已有快取插圖，跳過。`);
+          continue;
+        }
+
+        logMessage(`(${i + 1}/${VOCABULARY.length}) 正在生成 [${item.word}] 醫學教科書插圖...`);
+        try {
+          const dataUrl = await generateImageForWord(item);
+          imageAssets[item.id] = dataUrl;
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(imageAssets));
+          } catch (e) {
+            // 容量限制時保留在記憶體中
+          }
+          logMessage(`✓ [${item.word}] 插圖生成完成！`);
+          updateThumbnails();
+        } catch (err) {
+          logMessage(`✕ [${item.word}] 生成失敗：${err.message}`);
+          alert(`生成單字 "${item.word}" 時發生問題，請檢查網路連線或稍後再試。`);
+          break;
+        }
+        // 間隔少許時間維持穩定
+        await new Promise(r => setTimeout(r, 600));
+      }
+
+      isGenerating = false;
+      btnGen.disabled = false;
+      btnGen.classList.remove('opacity-50', 'cursor-not-allowed');
+      btnGen.textContent = '重新生成未完成插圖';
+      updateThumbnails();
+    }
+
+    // 載入本機快取圖片
+    function loadCachedAssets() {
+      try {
+        const cached = localStorage.getItem(STORAGE_KEY);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (typeof parsed === 'object') {
+            imageAssets = parsed;
+            logMessage('已從瀏覽器本機儲存空間載入既有 AI 插圖資產。');
+          }
+        }
+      } catch (e) {
+        logMessage('讀取本機快取異常，將使用全新工作階段。');
+      }
+      updateThumbnails();
+    }
+
+    // 題型 1: 看圖選英文 (Stimulus: 圖片, Options: 4 個單字文字按鈕)
+    // 題型 2: 看英文選圖 (Stimulus: 單字文字, Options: 4 張圖片按鈕)
+    // 題型 3: 聽聲音選圖 (Stimulus: 播放按鈕, Options: 4 張圖片按鈕)
+    // 題型 4: 看圖選聲音 (Stimulus: 圖片, Options: 4 個 [🔊 選項 A/B/C/D] 播放作答按鈕)
+    const QUESTION_TYPES = [
+      'image_to_word',
+      'word_to_image',
+      'audio_to_image',
+      'image_to_audio'
+    ];
+
+    function generateQuizRound() {
+      const questions = [];
+      const pool = [...VOCABULARY];
+
+      for (let i = 0; i < gameState.roundCount; i++) {
+        // 隨機題型
+        const type = QUESTION_TYPES[Math.floor(Math.random() * QUESTION_TYPES.length)];
+        // 隨機目標單字
+        const target = pool[Math.floor(Math.random() * pool.length)];
+
+        // 隨機選出 3 個不重複的干擾項
+        const otherWords = pool.filter(v => v.id !== target.id);
+        const shuffledOthers = [...otherWords].sort(() => 0.5 - Math.random());
+        const distractors = shuffledOthers.slice(0, 3);
+
+        // 4 個選項混洗
+        const options = [target, ...distractors].sort(() => 0.5 - Math.random());
+
+        questions.push({
+          type: type,
+          target: target,
+          options: options
+        });
+      }
+
+      gameState.questions = questions;
+      gameState.currentQuestionIndex = 0;
+      gameState.score = 0;
+      gameState.correctCount = 0;
+    }
+
+    function renderCurrentQuestion() {
+      gameState.isAnswered = false;
+      const q = gameState.questions[gameState.currentQuestionIndex];
+      gameState.currentQuestion = q;
+
+      // 更新進度與分數
+      document.getElementById('currentQuestionNum').textContent = gameState.currentQuestionIndex + 1;
+      document.getElementById('currentScoreDisplay').textContent = gameState.score;
+
+      // 隱藏即時反饋
+      const feedbackBanner = document.getElementById('feedbackBanner');
+      feedbackBanner.classList.add('hidden');
+
+      const badge = document.getElementById('questionTypeBadge');
+      const title = document.getElementById('questionPromptTitle');
+      const stimulus = document.getElementById('stimulusContainer');
+      const optionsBox = document.getElementById('optionsContainer');
+
+      stimulus.innerHTML = '';
+      optionsBox.innerHTML = '';
+
+      switch (q.type) {
+        case 'image_to_word':
+          badge.textContent = '題型一：看圖選英文';
+          title.textContent = '請觀察圖片呈現的身體部位，點選正確的英文單字：';
+          // 顯示大圖片
+          stimulus.innerHTML = `
+            <div class="relative w-52 sm:w-60 aspect-square bg-slate-100 rounded-2xl border-2 border-slate-200 overflow-hidden shadow-sm">
+              <img src="${imageAssets[q.target.id]}" alt="題目插圖" class="w-full h-full object-contain p-2" />
+            </div>
+          `;
+          // 渲染 4 個文字選項按鈕
+          optionsBox.className = 'grid grid-cols-2 gap-3 w-full max-w-md mx-auto';
+          q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn py-3.5 px-4 bg-slate-50 hover:bg-slate-100 border-2 border-slate-200 hover:border-slate-300 rounded-xl font-bold text-slate-800 text-base transition active:scale-95 shadow-2xs';
+            btn.innerHTML = `<span class="text-xs text-slate-400 mr-1.5">${String.fromCharCode(65 + idx)}.</span>${opt.word}`;
+            btn.onclick = () => handleAnswer(opt, btn);
+            optionsBox.appendChild(btn);
+          });
+          break;
+
+        case 'word_to_image':
+          badge.textContent = '題型二：看英文選圖';
+          title.textContent = '請閱讀下方的英文單字，選擇符合的身體部位插圖：';
+          // 顯示大單字
+          stimulus.innerHTML = `
+            <div class="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-2xl border-2 border-slate-200 w-full max-w-sm">
+              <span class="text-xs uppercase tracking-wider text-teal-600 font-bold mb-1">Target Word</span>
+              <span class="text-3xl sm:text-4xl font-black text-slate-900 tracking-wide">${q.target.word}</span>
+            </div>
+          `;
+          // 渲染 4 張圖片選項
+          optionsBox.className = 'grid grid-cols-2 sm:grid-cols-4 gap-3 w-full';
+          q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn group p-2 bg-slate-50 hover:bg-slate-100 border-2 border-slate-200 hover:border-slate-300 rounded-xl transition active:scale-95 flex flex-col items-center';
+            btn.innerHTML = `
+              <div class="w-full aspect-square rounded-lg overflow-hidden bg-white border border-slate-200 mb-2">
+                <img src="${imageAssets[opt.id]}" alt="選項插圖" class="w-full h-full object-contain p-1" />
+              </div>
+              <span class="text-xs font-bold text-slate-500 group-hover:text-slate-800">選項 ${String.fromCharCode(65 + idx)}</span>
+            `;
+            btn.onclick = () => handleAnswer(opt, btn);
+            optionsBox.appendChild(btn);
+          });
+          break;
+
+        case 'audio_to_image':
+          badge.textContent = '題型三：聽聲音選圖';
+          title.textContent = '點擊發音按鈕聆聽單字，選出相符的身體部位插圖：';
+          // 語音播放鈕
+          stimulus.innerHTML = `
+            <div class="flex flex-col items-center">
+              <button id="btnPlayStimulus" class="w-20 h-20 rounded-full bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center text-3xl shadow-md transition active:scale-95 pulse-subtle">
+                🔊
+              </button>
+              <span class="text-xs text-slate-500 font-semibold mt-3">點擊播放英文發音</span>
+            </div>
+          `;
+          setTimeout(() => {
+            const playBtn = document.getElementById('btnPlayStimulus');
+            if (playBtn) {
+              playBtn.onclick = () => playWordAudio(q.target.word);
+              // 自動播放一次方便學生作答
+              playWordAudio(q.target.word);
+            }
+          }, 200);
+
+          // 渲染 4 張圖片選項（無英文答案字樣）
+          optionsBox.className = 'grid grid-cols-2 sm:grid-cols-4 gap-3 w-full';
+          q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn group p-2 bg-slate-50 hover:bg-slate-100 border-2 border-slate-200 hover:border-slate-300 rounded-xl transition active:scale-95 flex flex-col items-center';
+            btn.innerHTML = `
+              <div class="w-full aspect-square rounded-lg overflow-hidden bg-white border border-slate-200 mb-2">
+                <img src="${imageAssets[opt.id]}" alt="選項插圖" class="w-full h-full object-contain p-1" />
+              </div>
+              <span class="text-xs font-bold text-slate-500 group-hover:text-slate-800">選項 ${String.fromCharCode(65 + idx)}</span>
+            `;
+            btn.onclick = () => handleAnswer(opt, btn);
+            optionsBox.appendChild(btn);
+          });
+          break;
+
+        case 'image_to_audio':
+          badge.textContent = '題型四：看圖選聲音';
+          title.textContent = '請觀察圖片，分別試聽四個聲音按鈕，選出正確發音：';
+          // 顯示大圖片
+          stimulus.innerHTML = `
+            <div class="relative w-52 sm:w-60 aspect-square bg-slate-100 rounded-2xl border-2 border-slate-200 overflow-hidden shadow-sm">
+              <img src="${imageAssets[q.target.id]}" alt="題目插圖" class="w-full h-full object-contain p-2" />
+            </div>
+          `;
+          // 渲染 4 個發音試聽按鈕（不顯示英文單字，只顯示 🔊 選項 A/B/C/D 與選擇按鈕）
+          optionsBox.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg mx-auto';
+          q.options.forEach((opt, idx) => {
+            const card = document.createElement('div');
+            card.className = 'opt-btn flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100 border-2 border-slate-200 rounded-xl transition';
+            card.innerHTML = `
+              <button type="button" class="btn-audio-listen flex items-center space-x-2 px-3 py-2 bg-white border border-slate-200 hover:border-teal-500 rounded-lg text-slate-700 text-xs font-bold transition active:scale-95">
+                <span class="text-teal-600 text-sm">🔊</span>
+                <span>試聽 ${String.fromCharCode(65 + idx)}</span>
+              </button>
+              <button type="button" class="btn-audio-select px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition active:scale-95">
+                選擇 ${String.fromCharCode(65 + idx)}
+              </button>
+            `;
+
+            // 綁定試聽事件
+            const listenBtn = card.querySelector('.btn-audio-listen');
+            listenBtn.onclick = (e) => {
+              e.stopPropagation();
+              playWordAudio(opt.word);
+            };
+
+            // 綁定選擇事件
+            const selectBtn = card.querySelector('.btn-audio-select');
+            selectBtn.onclick = () => handleAnswer(opt, card);
+
+            optionsBox.appendChild(card);
+          });
+          break;
+      }
+    }
+
+    function handleAnswer(selectedOpt, selectedElem) {
+      if (gameState.isAnswered) return;
+      gameState.isAnswered = true;
+
+      const q = gameState.currentQuestion;
+      const isCorrect = (selectedOpt.id === q.target.id);
+
+      // 禁用所有選項點擊
+      const allButtons = document.querySelectorAll('.opt-btn');
+      allButtons.forEach(b => {
+        b.style.pointerEvents = 'none';
+      });
+
+      // 反饋樣式更新
+      const feedbackBanner = document.getElementById('feedbackBanner');
+      const feedbackIcon = document.getElementById('feedbackIcon');
+      const feedbackTitle = document.getElementById('feedbackTitle');
+      const feedbackDetail = document.getElementById('feedbackDetail');
+
+      feedbackBanner.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-900', 'bg-rose-50', 'border-rose-200', 'text-rose-900');
+
+      if (isCorrect) {
+        gameState.score += 10;
+        gameState.correctCount += 1;
+        document.getElementById('currentScoreDisplay').textContent = gameState.score;
+        playBeep(true);
+
+        feedbackBanner.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-900');
+        feedbackIcon.textContent = '✓';
+        feedbackTitle.textContent = '答對了！正確答案：' + q.target.word;
+        feedbackDetail.textContent = `部位名稱：${q.target.word} (${q.target.zh})`;
+
+        if (selectedElem) {
+          selectedElem.classList.remove('bg-slate-50', 'border-slate-200');
+          selectedElem.classList.add('bg-emerald-100', 'border-emerald-500');
+        }
+      } else {
+        playBeep(false);
+
+        feedbackBanner.classList.add('bg-rose-50', 'border-rose-200', 'text-rose-900');
+        feedbackIcon.textContent = '✕';
+        feedbackTitle.textContent = '答錯了！正確答案是：' + q.target.word;
+        feedbackDetail.textContent = `你的選擇：${selectedOpt.word} | 正確單字：${q.target.word} (${q.target.zh})`;
+
+        if (selectedElem) {
+          selectedElem.classList.remove('bg-slate-50', 'border-slate-200');
+          selectedElem.classList.add('bg-rose-100', 'border-rose-400');
+        }
+      }
+
+      // 自動朗讀正確答案發音
+      setTimeout(() => {
+        playWordAudio(q.target.word);
+      }, 350);
+    }
+
+    // 進入下一題或結算
+    function proceedToNextQuestion() {
+      gameState.currentQuestionIndex++;
+      if (gameState.currentQuestionIndex < gameState.roundCount) {
+        renderCurrentQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('gameSection').classList.add('hidden');
+      document.getElementById('resultSection').classList.remove('hidden');
+
+      const finalScore = gameState.score;
+      const correctCount = gameState.correctCount;
+      const accuracy = Math.round((correctCount / gameState.roundCount) * 100);
+
+      document.getElementById('finalScore').textContent = finalScore;
+      document.getElementById('finalCorrectCount').textContent = `${correctCount} / ${gameState.roundCount}`;
+      document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
+
+      const feedbackBox = document.getElementById('resultFeedbackText');
+      if (accuracy === 100) {
+        feedbackBox.textContent = '太優秀了！你已完全掌握本課 8 個 Body Parts 核心單字與發音！';
+        feedbackBox.className = 'p-3.5 bg-emerald-50 text-emerald-800 rounded-xl text-xs border border-emerald-200 mb-6 font-semibold';
+      } else if (accuracy >= 80) {
+        feedbackBox.textContent = '表現良好！對身體部位英文的辨識度相當高，持續保持！';
+        feedbackBox.className = 'p-3.5 bg-teal-50 text-teal-800 rounded-xl text-xs border border-teal-200 mb-6 font-semibold';
+      } else if (accuracy >= 60) {
+        feedbackBox.textContent = '達到及格標準！建議針對容易混淆的 shoulder / arm 或 knee / leg 多加複習。';
+        feedbackBox.className = 'p-3.5 bg-amber-50 text-amber-800 rounded-xl text-xs border border-amber-200 mb-6 font-semibold';
+      } else {
+        feedbackBox.textContent = '還原度可再加強！建議點擊「檢視 8 個單字教材圖」重新熟悉各部位形貌後再測一次。';
+        feedbackBox.className = 'p-3.5 bg-slate-50 text-slate-700 rounded-xl text-xs border border-slate-200 mb-6 font-semibold';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initAssetGrid();
+      loadCachedAssets();
+
+      // 開始生成按鈕
+      document.getElementById('btnStartGeneration').addEventListener('click', () => {
+        startBatchGeneration();
+      });
+
+      // 進入遊戲按鈕
+      document.getElementById('btnEnterGame').addEventListener('click', () => {
+        document.getElementById('assetSection').classList.add('hidden');
+        document.getElementById('gameSection').classList.remove('hidden');
+        document.getElementById('resultSection').classList.add('hidden');
+        generateQuizRound();
+        renderCurrentQuestion();
+      });
+
+      // 下一題按鈕
+      document.getElementById('btnNextQuestion').addEventListener('click', () => {
+        proceedToNextQuestion();
+      });
+
+      // 再玩一次按鈕
+      document.getElementById('btnPlayAgain').addEventListener('click', () => {
+        document.getElementById('resultSection').classList.add('hidden');
+        document.getElementById('gameSection').classList.remove('hidden');
+        generateQuizRound();
+        renderCurrentQuestion();
+      });
+
+      // 檢視素材按鈕
+      document.getElementById('btnReviewAssets').addEventListener('click', () => {
+        document.getElementById('resultSection').classList.add('hidden');
+        document.getElementById('gameSection').classList.add('hidden');
+        document.getElementById('assetSection').classList.remove('hidden');
+      });
+
+      // 頂部發音測試
+      document.getElementById('btnSoundTest').addEventListener('click', () => {
+        playWordAudio('Welcome to body parts test');
+      });
+    });
+  </script>
+</body>
+</html>
