@@ -1,20 +1,71 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edu Web Games</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="課堂互動遊戲大廳：依科目分區的國中學習小遊戲。">
+  <meta name="theme-color" content="#fbf7f0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#151a24" media="(prefers-color-scheme: dark)">
+  <title>Edu Web Games｜課堂遊戲大廳</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/lobby.css">
 </head>
 <body>
-  <h1>Edu Web Games</h1>
+  <a class="skip" href="#content">跳到遊戲列表</a>
 
-  <ul>
-    <li>
-      <a href="./body-parts/">Body Parts Game</a>
-    </li>
-    <li>
-      <a href="./telling-time/">英文報時大挑戰（Telling Time）</a>
-    </li>
-  </ul>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="#all" aria-label="回到遊戲大廳首頁">
+        <span class="brand__mark" aria-hidden="true">🎮</span>
+        <span class="brand__text">
+          <strong>Edu Web Games</strong>
+          <small>課堂遊戲大廳</small>
+        </span>
+      </a>
+      <button class="btn-random" id="randomBtn" type="button">
+        <span aria-hidden="true">🎲</span> 隨機挑一個
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero__copy">
+        <p class="hero__eyebrow">Learn · Play · Level up</p>
+        <h1 id="heroTitle">選一個科目，<br class="br-sm">開始挑戰！</h1>
+        <p class="hero__sub" id="heroStats">載入中…</p>
+      </div>
+      <label class="search" for="searchInput">
+        <span class="search__icon" aria-hidden="true">🔍</span>
+        <input id="searchInput" type="search" placeholder="搜尋遊戲，例如「單字」「時間」" autocomplete="off">
+        <kbd class="search__key" aria-hidden="true">/</kbd>
+      </label>
+      <div class="hero__deco" aria-hidden="true">
+        <span>📖</span><span>🔤</span><span>📐</span><span>🔬</span><span>🌏</span>
+      </div>
+    </section>
+
+    <nav class="subjects" id="subjectNav" aria-label="科目專區"></nav>
+
+    <div id="content" class="content" tabindex="-1"></div>
+  </main>
+
+  <footer class="footer">
+    <p>Edu Web Games · 給課堂使用的互動小遊戲</p>
+    <p class="footer__muted" id="footerStats"></p>
+  </footer>
+
+  <noscript>
+    <div class="noscript">
+      這個頁面需要開啟 JavaScript。也可以直接打開：
+      <a href="./telling-time/">英文報時大挑戰</a>、<a href="./body-parts/">身體部位單字</a>
+    </div>
+  </noscript>
+
+  <script src="./assets/catalog.js"></script>
+  <script src="./assets/lobby.js"></script>
 </body>
 </html>
