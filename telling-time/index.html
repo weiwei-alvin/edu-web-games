@@ -95,7 +95,7 @@ input[type=text]:focus{border-color:var(--pri)}
   <input id="nick" type="text" maxlength="16" placeholder="例如：12號 小明" autocomplete="off">
   <div class="err" id="nickErr"></div>
   <ul class="rules">
-    <li>共 10 題，越後面越難 💪</li>
+    <li>共 60 題，包含 5 種題型 💪</li>
     <li>每題 30 秒，答對 +100 分</li>
     <li>連續答對有連勝加分 🔥（最多 +50）</li>
     <li>名字只存在這支手機的畫面上，不會傳送到任何地方</li>
@@ -106,7 +106,7 @@ input[type=text]:focus{border-color:var(--pri)}
 <!-- QUIZ -->
 <section id="quiz" class="hidden">
   <div class="topbar">
-    <span class="pill" id="qnum">第 1 / 10 題</span>
+    <span class="pill" id="qnum">第 1 / 60 題</span>
     <span class="pill streak" id="streak">🔥 0</span>
     <span class="pill" id="score">⭐ 0</span>
   </div>
@@ -192,7 +192,57 @@ var QUESTIONS = [
     zh:"演唱會門票上印的時間應該是哪一個？",
     options:["9:35","10:35","9:25","10:25"],
     answer:"9:35",
-    ex:"twenty-five to ten = 還差 25 分到 10 點 → 60 − 25 = 35，所以是 9:35。to 的說法，數字時間小時要減 1。" }
+    ex:"twenty-five to ten = 還差 25 分到 10 點 → 60 − 25 = 35，所以是 9:35。to 的說法，數字時間小時要減 1。" },
+  {"id":11,"type":"clock","h":2,"m":5,"level":1,"prompt":"What time is it?","zh":"看時鐘，選出正確的說法。","options":["five past two","five past three","five to three","five past one"],"answer":"five past two","ex":"2:05 → 過了 5 分，用 past 加現在的小時：five past two。"},
+  {"id":12,"type":"clock","h":6,"m":10,"level":1,"prompt":"What time is it?","zh":"看時鐘，選出正確的說法。","options":["ten past six","ten past seven","ten to seven","ten past five"],"answer":"ten past six","ex":"6:10 → 過了 10 分，用 past 加現在的小時：ten past six。"},
+  {"id":13,"type":"clock","h":9,"m":15,"level":1,"prompt":"What time is it?","zh":"看時鐘，選出正確的說法。","options":["a quarter past nine","a quarter past ten","a quarter to ten","a quarter past eight"],"answer":"a quarter past nine","ex":"9:15 → 過了 15 分，用 past 加現在的小時：a quarter past nine。"},
+  {"id":14,"type":"clock","h":12,"m":30,"level":1,"prompt":"What time is it?","zh":"看時鐘，選出正確的說法。","options":["half past twelve","half past one","a quarter past twelve","half past eleven"],"answer":"half past twelve","ex":"12:30 → 過了半小時，用 past 加現在的小時：half past twelve。"},
+  {"id":15,"type":"clock","h":3,"m":40,"level":2,"prompt":"What time is it?","zh":"看時鐘，選出正確的說法。","options":["twenty to four","twenty to five","twenty past three","twenty to three"],"answer":"twenty to four","ex":"3:40 → 60 − 40 = 20，還差 20 分到 4 點：twenty to four。"},
+  {"id":16,"type":"clock","h":11,"m":45,"level":2,"prompt":"What time is it?","zh":"看時鐘，選出正確的說法。","options":["a quarter to twelve","a quarter to one","a quarter past eleven","a quarter to eleven"],"answer":"a quarter to twelve","ex":"11:45 → 60 − 45 = 15，還差 15 分到 12 點：a quarter to twelve。11 點的下一個小時是 12 點。"},
+  {"id":17,"type":"clock","h":4,"m":50,"level":2,"prompt":"What time is it?","zh":"看時鐘，選出正確的說法。","options":["ten to five","ten to six","ten past four","ten to four"],"answer":"ten to five","ex":"4:50 → 60 − 50 = 10，還差 10 分到 5 點：ten to five。"},
+  {"id":18,"type":"clock","h":12,"m":55,"level":2,"prompt":"What time is it?","zh":"看時鐘，選出正確的說法。","options":["five to one","five to two","five past twelve","five to twelve"],"answer":"five to one","ex":"12:55 → 60 − 55 = 5，還差 5 分到 1 點：five to one。12 點的下一個小時是 1 點。"},
+  {"id":19,"type":"phrase","h":1,"m":5,"level":1,"prompt":"five past one","zh":"這個說法是幾點幾分？","options":["1:05","2:05","1:55","12:05"],"answer":"1:05","ex":"1:05 → 過了 5 分，用 past 加現在的小時：five past one。"},
+  {"id":20,"type":"phrase","h":8,"m":10,"level":1,"prompt":"ten past eight","zh":"這個說法是幾點幾分？","options":["8:10","9:10","8:50","7:10"],"answer":"8:10","ex":"8:10 → 過了 10 分，用 past 加現在的小時：ten past eight。"},
+  {"id":21,"type":"phrase","h":3,"m":15,"level":1,"prompt":"a quarter past three","zh":"這個說法是幾點幾分？","options":["3:15","4:15","3:45","2:15"],"answer":"3:15","ex":"3:15 → 過了 15 分，用 past 加現在的小時：a quarter past three。"},
+  {"id":22,"type":"phrase","h":6,"m":20,"level":1,"prompt":"twenty past six","zh":"這個說法是幾點幾分？","options":["6:20","7:20","6:40","5:20"],"answer":"6:20","ex":"6:20 → 過了 20 分，用 past 加現在的小時：twenty past six。"},
+  {"id":23,"type":"phrase","h":10,"m":25,"level":1,"prompt":"twenty-five past ten","zh":"這個說法是幾點幾分？","options":["10:25","11:25","10:35","9:25"],"answer":"10:25","ex":"10:25 → 過了 25 分，用 past 加現在的小時：twenty-five past ten。"},
+  {"id":24,"type":"phrase","h":2,"m":30,"level":1,"prompt":"half past two","zh":"這個說法是幾點幾分？","options":["2:30","3:30","2:15","1:30"],"answer":"2:30","ex":"2:30 → 過了半小時，用 past 加現在的小時：half past two。"},
+  {"id":25,"type":"phrase","h":5,"m":35,"level":2,"prompt":"twenty-five to six","zh":"這個說法是幾點幾分？","options":["5:35","6:35","5:25","4:35"],"answer":"5:35","ex":"5:35 → 60 − 35 = 25，還差 25 分到 6 點：twenty-five to six。"},
+  {"id":26,"type":"phrase","h":9,"m":40,"level":2,"prompt":"twenty to ten","zh":"這個說法是幾點幾分？","options":["9:40","10:40","9:20","8:40"],"answer":"9:40","ex":"9:40 → 60 − 40 = 20，還差 20 分到 10 點：twenty to ten。"},
+  {"id":27,"type":"phrase","h":11,"m":50,"level":2,"prompt":"ten to twelve","zh":"這個說法是幾點幾分？","options":["11:50","12:50","11:10","10:50"],"answer":"11:50","ex":"11:50 → 60 − 50 = 10，還差 10 分到 12 點：ten to twelve。11 點的下一個小時是 12 點。"},
+  {"id":28,"type":"phrase","h":12,"m":45,"level":2,"prompt":"a quarter to one","zh":"這個說法是幾點幾分？","options":["12:45","1:45","12:15","11:45"],"answer":"12:45","ex":"12:45 → 60 − 45 = 15，還差 15 分到 1 點：a quarter to one。12 點的下一個小時是 1 點。"},
+  {"id":29,"type":"build","h":7,"m":5,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["five","past","seven","to","eight","half","quarter"],"accept":["five past seven"],"answer":"five past seven","ex":"7:05 → 過了 5 分，用 past 加現在的小時：five past seven。"},
+  {"id":30,"type":"build","h":11,"m":10,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["ten","past","eleven","to","twelve","half","quarter"],"accept":["ten past eleven"],"answer":"ten past eleven","ex":"11:10 → 過了 10 分，用 past 加現在的小時：ten past eleven。"},
+  {"id":31,"type":"build","h":4,"m":15,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["a","quarter","past","four","to","five","half"],"accept":["a quarter past four"],"answer":"a quarter past four","ex":"4:15 → 過了 15 分，用 past 加現在的小時：a quarter past four。"},
+  {"id":32,"type":"build","h":8,"m":20,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["twenty","past","eight","to","nine","half","quarter"],"accept":["twenty past eight"],"answer":"twenty past eight","ex":"8:20 → 過了 20 分，用 past 加現在的小時：twenty past eight。"},
+  {"id":33,"type":"build","h":1,"m":25,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["twenty-five","past","one","to","two","half","quarter"],"accept":["twenty-five past one"],"answer":"twenty-five past one","ex":"1:25 → 過了 25 分，用 past 加現在的小時：twenty-five past one。"},
+  {"id":34,"type":"build","h":6,"m":30,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["half","past","six","to","seven","quarter"],"accept":["half past six"],"answer":"half past six","ex":"6:30 → 過了半小時，用 past 加現在的小時：half past six。"},
+  {"id":35,"type":"build","h":2,"m":35,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["twenty-five","to","three","past","two","half","quarter"],"accept":["twenty-five to three"],"answer":"twenty-five to three","ex":"2:35 → 60 − 35 = 25，還差 25 分到 3 點：twenty-five to three。"},
+  {"id":36,"type":"build","h":10,"m":40,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["twenty","to","eleven","past","ten","half","quarter"],"accept":["twenty to eleven"],"answer":"twenty to eleven","ex":"10:40 → 60 − 40 = 20，還差 20 分到 11 點：twenty to eleven。"},
+  {"id":37,"type":"build","h":3,"m":45,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["a","quarter","to","four","past","three","half"],"accept":["a quarter to four"],"answer":"a quarter to four","ex":"3:45 → 60 − 45 = 15，還差 15 分到 4 點：a quarter to four。"},
+  {"id":38,"type":"build","h":9,"m":50,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["ten","to","ten","past","nine","half","quarter"],"accept":["ten to ten"],"answer":"ten to ten","ex":"9:50 → 60 − 50 = 10，還差 10 分到 10 點：ten to ten。"},
+  {"id":39,"type":"build","h":11,"m":55,"level":3,"prompt":"點字卡，拼出這個時間的英文說法。","zh":"","tiles":["five","to","twelve","past","eleven","half","quarter"],"accept":["five to twelve"],"answer":"five to twelve","ex":"11:55 → 60 − 55 = 5，還差 5 分到 12 點：five to twelve。11 點的下一個小時是 12 點。"},
+  {"id":40,"type":"type","h":3,"m":5,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["five past three","five after three","5 past three","5 past 3","five past 3"],"answer":"five past three","placeholder":"例如：ten past six","ex":"3:05 → 過了 5 分，用 past 加現在的小時：five past three。"},
+  {"id":41,"type":"type","h":5,"m":10,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["ten past five","ten after five","10 past five","10 past 5","ten past 5"],"answer":"ten past five","placeholder":"例如：ten past six","ex":"5:10 → 過了 10 分，用 past 加現在的小時：ten past five。"},
+  {"id":42,"type":"type","h":7,"m":15,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["a quarter past seven","a quarter after seven","quarter past seven","fifteen past seven"],"answer":"a quarter past seven","placeholder":"例如：ten past six","ex":"7:15 → 過了 15 分，用 past 加現在的小時：a quarter past seven。"},
+  {"id":43,"type":"type","h":9,"m":20,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["twenty past nine","twenty after nine","20 past nine","20 past 9","twenty past 9"],"answer":"twenty past nine","placeholder":"例如：ten past six","ex":"9:20 → 過了 20 分，用 past 加現在的小時：twenty past nine。"},
+  {"id":44,"type":"type","h":12,"m":25,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["twenty-five past twelve","twenty-five after twelve","25 past twelve","25 past 12","twenty-five past 12"],"answer":"twenty-five past twelve","placeholder":"例如：ten past six","ex":"12:25 → 過了 25 分，用 past 加現在的小時：twenty-five past twelve。"},
+  {"id":45,"type":"type","h":4,"m":30,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["half past four","half after four"],"answer":"half past four","placeholder":"例如：ten past six","ex":"4:30 → 過了半小時，用 past 加現在的小時：half past four。"},
+  {"id":46,"type":"type","h":6,"m":35,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["twenty-five to seven","twenty-five of seven","25 to seven","25 to 7","twenty-five to 7"],"answer":"twenty-five to seven","placeholder":"例如：ten past six","ex":"6:35 → 60 − 35 = 25，還差 25 分到 7 點：twenty-five to seven。"},
+  {"id":47,"type":"type","h":1,"m":40,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["twenty to two","twenty of two","20 to two","20 to 2","twenty to 2"],"answer":"twenty to two","placeholder":"例如：ten past six","ex":"1:40 → 60 − 40 = 20，還差 20 分到 2 點：twenty to two。"},
+  {"id":48,"type":"type","h":8,"m":45,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["a quarter to nine","a quarter of nine","quarter to nine","fifteen to nine"],"answer":"a quarter to nine","placeholder":"例如：ten past six","ex":"8:45 → 60 − 45 = 15，還差 15 分到 9 點：a quarter to nine。"},
+  {"id":49,"type":"type","h":2,"m":50,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["ten to three","ten of three","10 to three","10 to 3","ten to 3"],"answer":"ten to three","placeholder":"例如：ten past six","ex":"2:50 → 60 − 50 = 10，還差 10 分到 3 點：ten to three。"},
+  {"id":50,"type":"type","h":12,"m":35,"level":3,"prompt":"用英文寫出這個時間（請用 past 或 to）。","zh":"","accept":["twenty-five to one","twenty-five of one","25 to one","25 to 1","twenty-five to 1"],"answer":"twenty-five to one","placeholder":"例如：ten past six","ex":"12:35 → 60 − 35 = 25，還差 25 分到 1 點：twenty-five to one。12 點的下一個小時是 1 點。"},
+  {"id":51,"type":"situation","h":10,"m":5,"level":3,"prompt":"The bus leaves at 10:05. How do you say the time?","zh":"公車發車的時間是 10:05，該怎麼說？","options":["five past ten","five past eleven","five to eleven","five past nine"],"answer":"five past ten","ex":"10:05 → 過了 5 分，用 past 加現在的小時：five past ten。","showDigital":true,"say":"At ______."},
+  {"id":52,"type":"situation","h":2,"m":10,"level":3,"prompt":"The library opens at ten past two.","zh":"圖書館開門的時間是幾點幾分？","options":["2:10","3:10","2:50","1:10"],"answer":"2:10","ex":"2:10 → 過了 10 分，用 past 加現在的小時：ten past two。","timeOptions":true},
+  {"id":53,"type":"situation","h":5,"m":15,"level":3,"prompt":"Lunch starts at 5:15. How do you say the time?","zh":"午餐開始的時間是 5:15，該怎麼說？","options":["a quarter past five","a quarter past six","a quarter to six","a quarter past four"],"answer":"a quarter past five","ex":"5:15 → 過了 15 分，用 past 加現在的小時：a quarter past five。","showDigital":true,"say":"At ______."},
+  {"id":54,"type":"situation","h":11,"m":20,"level":3,"prompt":"Our English class starts at twenty past eleven.","zh":"英文課開始的時間是幾點幾分？","options":["11:20","12:20","11:40","10:20"],"answer":"11:20","ex":"11:20 → 過了 20 分，用 past 加現在的小時：twenty past eleven。","timeOptions":true},
+  {"id":55,"type":"situation","h":3,"m":25,"level":3,"prompt":"The movie starts at 3:25. How do you say the time?","zh":"電影開演的時間是 3:25，該怎麼說？","options":["twenty-five past three","twenty-five past four","twenty-five to four","twenty-five past two"],"answer":"twenty-five past three","ex":"3:25 → 過了 25 分，用 past 加現在的小時：twenty-five past three。","showDigital":true,"say":"At ______."},
+  {"id":56,"type":"situation","h":8,"m":30,"level":3,"prompt":"The swimming lesson starts at half past eight.","zh":"游泳課開始的時間是幾點幾分？","options":["8:30","9:30","8:15","7:30"],"answer":"8:30","ex":"8:30 → 過了半小時，用 past 加現在的小時：half past eight。","timeOptions":true},
+  {"id":57,"type":"situation","h":4,"m":35,"level":3,"prompt":"The train leaves at 4:35. How do you say the time?","zh":"火車發車的時間是 4:35，該怎麼說？","options":["twenty-five to five","twenty-five to six","twenty-five past four","twenty-five to four"],"answer":"twenty-five to five","ex":"4:35 → 60 − 35 = 25，還差 25 分到 5 點：twenty-five to five。","showDigital":true,"say":"At ______."},
+  {"id":58,"type":"situation","h":7,"m":40,"level":3,"prompt":"The basketball game starts at twenty to eight.","zh":"籃球賽開始的時間是幾點幾分？","options":["7:40","8:40","7:20","6:40"],"answer":"7:40","ex":"7:40 → 60 − 40 = 20，還差 20 分到 8 點：twenty to eight。","timeOptions":true},
+  {"id":59,"type":"situation","h":6,"m":45,"level":3,"prompt":"The shop closes at 6:45. How do you say the time?","zh":"商店打烊的時間是 6:45，該怎麼說？","options":["a quarter to seven","a quarter to eight","a quarter past six","a quarter to six"],"answer":"a quarter to seven","ex":"6:45 → 60 − 45 = 15，還差 15 分到 7 點：a quarter to seven。","showDigital":true,"say":"At ______."},
+  {"id":60,"type":"situation","h":1,"m":55,"level":3,"prompt":"The online meeting starts at five to two.","zh":"線上會議開始的時間是幾點幾分？","options":["1:55","2:55","1:05","12:55"],"answer":"1:55","ex":"1:55 → 60 − 55 = 5，還差 5 分到 2 點：five to two。","timeOptions":true}
 ];
 
 /* ===================== 共用邏輯 LOGIC ===================== */
@@ -398,3 +448,4 @@ $("homeBtn").addEventListener("click", function(){ $("nick").value=""; show("sta
 </script>
 </body>
 </html>
+
