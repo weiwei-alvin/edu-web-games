@@ -95,7 +95,7 @@ input[type=text]:focus{border-color:var(--pri)}
   <input id="nick" type="text" maxlength="16" placeholder="例如：12號 小明" autocomplete="off">
   <div class="err" id="nickErr"></div>
   <ul class="rules">
-    <li>共 60 題，包含 5 種題型 💪</li>
+    <li>題庫共 60 題，每次隨機抽出 10 題（不重複），包含 5 種題型 💪</li>
     <li>每題 30 秒，答對 +100 分</li>
     <li>連續答對有連勝加分 🔥（最多 +50）</li>
     <li>名字只存在這支手機的畫面上，不會傳送到任何地方</li>
@@ -106,7 +106,7 @@ input[type=text]:focus{border-color:var(--pri)}
 <!-- QUIZ -->
 <section id="quiz" class="hidden">
   <div class="topbar">
-    <span class="pill" id="qnum">第 1 / 60 題</span>
+    <span class="pill" id="qnum">第 1 / 10 題</span>
     <span class="pill streak" id="streak">🔥 0</span>
     <span class="pill" id="score">⭐ 0</span>
   </div>
@@ -283,8 +283,9 @@ var st = { nick:"", order:[], idx:0, score:0, streak:0, best:0, correct:0, resul
 var $ = function(id){ return document.getElementById(id); };
 function show(id){ ["start","quiz","end"].forEach(function(s){ $(s).classList.toggle("hidden", s!==id); }); window.scrollTo(0,0); }
 
-function startGame(shuffled){
-  st.order = shuffled ? shuffle(QUESTIONS) : QUESTIONS.slice();
+var QUESTIONS_PER_ROUND = 10;
+function startGame(){
+  st.order = shuffle(QUESTIONS).slice(0, QUESTIONS_PER_ROUND);
   st.idx=0; st.score=0; st.streak=0; st.best=0; st.correct=0; st.results=[];
   show("quiz"); renderQ();
 }
@@ -439,11 +440,11 @@ function endGame(){
 $("startBtn").addEventListener("click", function(){
   var v=$("nick").value.trim();
   if (!v){ $("nickErr").textContent="請先輸入暱稱或座號喔！"; $("nick").focus(); return; }
-  st.nick=v; $("nickErr").textContent=""; startGame(false);
+  st.nick=v; $("nickErr").textContent=""; startGame();
 });
 $("nick").addEventListener("keydown", function(e){ if (e.key==="Enter") $("startBtn").click(); });
 $("nextBtn").addEventListener("click", next);
-$("againBtn").addEventListener("click", function(){ startGame(true); });
+$("againBtn").addEventListener("click", function(){ startGame(); });
 $("homeBtn").addEventListener("click", function(){ $("nick").value=""; show("start"); });
 </script>
 </body>
