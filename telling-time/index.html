@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#4f7cff">
 <meta name="robots" content="noindex">
-<title>英文報時大挑戰 Telling the Time</title>
+<title>英文報時練習 Telling the Time</title>
 <style>
 :root{--bg:#f3f6ff;--card:#fff;--ink:#1f2a44;--muted:#6b7591;--pri:#4f7cff;--pri2:#3a62e0;--ok:#1fa971;--okbg:#e6f8f0;--bad:#e5484d;--badbg:#fdecec;--warn:#ffb020;--r:18px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -25,6 +25,17 @@ input[type=text]:focus{border-color:var(--pri)}
 .btn.ghost{background:#eef2ff;color:var(--pri2);box-shadow:none}
 .rules{background:#f7f9ff;border-radius:14px;padding:10px 14px;margin-top:14px;color:#3d4766;font-size:.95rem}
 .rules li{margin:3px 0}
+.modes{border:0;padding:0;margin:16px 0 0;min-width:0}
+.modes legend{font-weight:700;margin-bottom:8px}
+.mode-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode-option{position:relative;cursor:pointer;margin:0;font-weight:400}
+.mode-option input{position:absolute;opacity:0;width:1px;height:1px}
+.mode-content{display:block;height:100%;border:2px solid #d6dcef;border-radius:14px;padding:10px 12px;background:#fff;font-size:.9rem;color:var(--muted)}
+.mode-content strong{display:block;font-size:1rem;color:var(--ink)}
+.mode-option input:checked+.mode-content{border-color:var(--pri);background:#eef2ff}
+.mode-option input:focus-visible+.mode-content{outline:3px solid var(--ink);outline-offset:2px}
+.mode-label{color:var(--muted);font-size:.85rem;font-weight:700;margin:0 0 6px}
+@media(max-width:380px){.mode-choices{grid-template-columns:1fr}}
 .err{color:var(--bad);font-size:.95rem;min-height:1.3em;margin-top:6px}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-weight:700}
 .pill{background:#fff;border-radius:999px;padding:6px 12px;box-shadow:0 2px 8px rgba(40,60,120,.07);font-size:.95rem;white-space:nowrap}
@@ -89,14 +100,21 @@ input[type=text]:focus{border-color:var(--pri)}
 <!-- START -->
 <section id="start" class="card">
   <div class="hero">⏰</div>
-  <h1>英文報時大挑戰</h1>
+  <h1>英文報時練習</h1>
   <p class="sub">Telling the Time · past / to / a quarter / half</p>
   <label for="nick">暱稱或座號（登入）</label>
   <input id="nick" type="text" maxlength="16" placeholder="例如：12號 小明" autocomplete="off">
   <div class="err" id="nickErr"></div>
+  <fieldset class="modes">
+    <legend>選擇模式</legend>
+    <div class="mode-choices">
+      <label class="mode-option"><input type="radio" name="mode" value="challenge" checked><span class="mode-content"><strong>⏱ 挑戰模式</strong>每題 30 秒</span></label>
+      <label class="mode-option"><input type="radio" name="mode" value="learning"><span class="mode-content"><strong>📖 學習模式</strong>沒有時間限制</span></label>
+    </div>
+  </fieldset>
   <ul class="rules">
     <li>題庫共 60 題，每次隨機抽出 10 題（不重複），包含 5 種題型 💪</li>
-    <li>每題 30 秒，答對 +100 分</li>
+    <li id="timeRule">每題 30 秒，答對 +100 分</li>
     <li>連續答對有連勝加分 🔥（最多 +50）</li>
     <li>名字只存在這支手機的畫面上，不會傳送到任何地方</li>
   </ul>
@@ -105,6 +123,7 @@ input[type=text]:focus{border-color:var(--pri)}
 
 <!-- QUIZ -->
 <section id="quiz" class="hidden">
+  <p class="mode-label" id="modeLabel"></p>
   <div class="topbar">
     <span class="pill" id="qnum">第 1 / 10 題</span>
     <span class="pill streak" id="streak">🔥 0</span>
@@ -112,7 +131,7 @@ input[type=text]:focus{border-color:var(--pri)}
   </div>
   <div class="prog"><i id="progBar"></i></div>
   <div class="card">
-    <div class="timer"><i id="timerBar"></i></div>
+    <div class="timer" id="timerTrack"><i id="timerBar"></i></div>
     <div style="display:flex;justify-content:space-between;align-items:center">
       <span class="qtag" id="qtag"></span>
       <span class="pill" id="timeLeft" style="box-shadow:none;background:#f3f6ff">⏱ 30</span>
@@ -279,14 +298,24 @@ function clockSVG(h,m){
 }
 
 /* ===================== 遊戲狀態 STATE ===================== */
-var st = { nick:"", order:[], idx:0, score:0, streak:0, best:0, correct:0, results:[], timer:null, left:TIME_LIMIT, answered:false, built:[] };
+var st = { nick:"", mode:"challenge", order:[], idx:0, score:0, streak:0, best:0, correct:0, results:[], timer:null, left:TIME_LIMIT, answered:false, built:[] };
 var $ = function(id){ return document.getElementById(id); };
 function show(id){ ["start","quiz","end"].forEach(function(s){ $(s).classList.toggle("hidden", s!==id); }); window.scrollTo(0,0); }
+function updateModeChoice(){
+  var learning = document.querySelector('input[name="mode"]:checked').value === "learning";
+  $("timeRule").textContent = learning ? "不限時間，答對 +100 分" : "每題 30 秒，答對 +100 分";
+  $("startBtn").textContent = learning ? "開始學習 ▶" : "開始挑戰 ▶";
+}
 
 var QUESTIONS_PER_ROUND = 10;
 function startGame(){
+  clearInterval(st.timer); st.timer=null;
   st.order = shuffle(QUESTIONS).slice(0, QUESTIONS_PER_ROUND);
   st.idx=0; st.score=0; st.streak=0; st.best=0; st.correct=0; st.results=[];
+  var learning = st.mode === "learning";
+  $("modeLabel").textContent = learning ? "📖 學習模式 · 沒有時間限制" : "⏱ 挑戰模式 · 每題 30 秒";
+  $("timerTrack").classList.toggle("hidden", learning);
+  $("timeLeft").classList.toggle("hidden", learning);
   show("quiz"); renderQ();
 }
 
@@ -370,7 +399,9 @@ function drawLine(q){
   $("submitBtn").disabled=false;
 }
 function startTimer(){
-  clearInterval(st.timer); st.left=TIME_LIMIT; tick();
+  clearInterval(st.timer); st.timer=null;
+  if (st.mode === "learning") return;
+  st.left=TIME_LIMIT; tick();
   st.timer=setInterval(function(){ st.left--; tick(); if (st.left<=0){ clearInterval(st.timer); answer(st.order[st.idx], null); } }, 1000);
 }
 function tick(){
@@ -419,7 +450,7 @@ function endGame(){
   var msg = acc===100?"滿分！報時高手！":(acc>=70?"很棒！再接再厲！":(acc>=40?"不錯，複習錯題再挑戰！":"別灰心，再玩一次就會進步！"));
   var d=new Date(), stamp=d.getFullYear()+"/"+pad(d.getMonth()+1)+"/"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes());
   $("resultCard").innerHTML =
-    '<div style="font-size:.95rem;opacity:.9">英文報時大挑戰 成績卡</div>'+
+    '<div style="font-size:.95rem;opacity:.9">英文報時 · '+(st.mode==="learning"?"學習模式":"挑戰模式")+' 成績卡</div>'+
     '<div class="nm">'+esc(st.nick)+'</div>'+
     '<div class="stars">'+stars+'</div>'+
     '<div class="big">'+st.score+'<span style="font-size:1.2rem"> 分</span></div>'+
@@ -440,8 +471,10 @@ function endGame(){
 $("startBtn").addEventListener("click", function(){
   var v=$("nick").value.trim();
   if (!v){ $("nickErr").textContent="請先輸入暱稱或座號喔！"; $("nick").focus(); return; }
-  st.nick=v; $("nickErr").textContent=""; startGame();
+  st.nick=v; st.mode=document.querySelector('input[name="mode"]:checked').value;
+  $("nickErr").textContent=""; startGame();
 });
+document.querySelectorAll('input[name="mode"]').forEach(function(input){ input.addEventListener("change", updateModeChoice); });
 $("nick").addEventListener("keydown", function(e){ if (e.key==="Enter") $("startBtn").click(); });
 $("nextBtn").addEventListener("click", next);
 $("againBtn").addEventListener("click", function(){ startGame(); });

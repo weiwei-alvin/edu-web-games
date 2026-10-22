@@ -21,13 +21,13 @@ window.CATALOG = {
     {
       id: "telling-time",
       subject: "english",
-      title: "英文報時大挑戰",
+      title: "英文報時練習",
       en: "Telling the Time",
       icon: "⏰",
       path: "./telling-time/",
       grade: "國中",
-      desc: "past / to / a quarter / half 一次練熟。60 題、5 種題型，每題 30 秒，連續答對還有連勝加分。",
-      tags: ["時間表達", "計時挑戰", "連勝加分"],
+      desc: "past / to / a quarter / half 一次練熟。60 題題庫，每回合隨機 10 題，可選限時挑戰或不限時學習。",
+      tags: ["時間表達", "挑戰模式", "學習模式", "連勝加分"],
       added: "2026-10-17"
     },
     {
