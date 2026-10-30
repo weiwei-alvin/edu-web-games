@@ -19,6 +19,18 @@ window.CATALOG = {
 
   games: [
     {
+      id: "speaking-cards",
+      subject: "english",
+      title: "動作說話卡",
+      en: "Action Cards",
+      icon: "💬",
+      path: "./speaking-cards/",
+      grade: "國中",
+      desc: "翻開 29 種動作圖卡，練習現在進行式。支援 he、she、they、you 問答，老師可揭曉答案與標記完成。",
+      tags: ["現在進行式", "口說", "看圖", "翻牌"],
+      added: "2026-10-30"
+    },
+    {
       id: "telling-time",
       subject: "english",
       title: "英文報時練習",
