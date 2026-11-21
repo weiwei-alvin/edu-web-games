@@ -1,3 +1,5 @@
+> **已搬家：** 遊戲現在放在 https://weiweialvin.tech/games/classroom/ ，原始碼在 [weiwei-alvin/weiwei-alvin.github.io](https://github.com/weiwei-alvin/weiwei-alvin.github.io/tree/main/games/classroom)。這個 repo 只保留舊網址的轉址頁，之後請到新位置修改。
+
 # 國一英文單字遊戲
 
 八款入口皆整合在原有 `index.html#english` 大廳，原有三款遊戲保留。
