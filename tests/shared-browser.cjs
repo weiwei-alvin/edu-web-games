@@ -63,7 +63,7 @@ const fileURL = p => 'file:///' + path.resolve(p).replace(/\\/g,'/');
       await page.reload();await page.locator('#words tr').first().waitFor();
       assert.equal(await page.getByLabel('第 1 筆 example',{exact:true}).inputValue(),'Updated example.');
       // An unfinished draft (blank revision) must survive a reload instead of emptying the editor.
-      await page.locator('#revision').fill('');
+      await page.locator('#advanced summary').click();await page.locator('#revision').fill('');
       await page.reload();await page.locator('#words tr').first().waitFor();
       assert.equal(await page.locator('#words tr').count(),10);
       assert.equal(await page.getByLabel('第 1 筆 example',{exact:true}).inputValue(),'Updated example.');
