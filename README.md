@@ -1,5 +1,17 @@
 # 國一英文單字遊戲
 
+## 教師共用教材（第一階段）
+
+從大廳「輸入共用教材」或 `lesson-editor/index.html` 進入。填寫課別後，貼上每列「英文 Tab 中文」並按預覽，再於表格補雙語例句。也可直接匯入 [十詞 JSON 範例](lessons/example.json)。同一份教材可啟動配對 8/10 組、翻牌 4/6/8 組與打字 10 題。修改表格後再次啟動即讀取更新內容。原型保留名稱不可作為詞條 ID，重複卡面、中文提示及缺例句均會提示並阻止啟動；系統不會代寫例句。
+
+教材格式包含 `schemaVersion: 1`、穩定 `lessonId`、正整數 `revision`、`publisherId`、`editionId`、`grade`（7–9）、`book`（1–6）、文字 `lesson`、`title`、`sourceNote`、`goals` 陣列與 `words`。詞條包含穩定 `id`、`en`、`zh`、`example`、`exampleZh`。草稿可先缺例句並匯出，開局前需補齊。建議編輯後增加修訂號，並匯出 JSON 備份。
+
+HTTP／GitHub Pages 透過同源同分頁 `sessionStorage` 傳遞，返回及重新整理可繼續使用。關閉分頁、清除暫存或傳送網址給別人後，需重新匯入 JSON。匯入不會上傳 GitHub，也不會自動改寫本機原始檔案。此階段沒有正式課程索引或自動同步。
+
+直接開啟 HTML 時，教材以網址片段攜帶至遊戲並隨返回帶回，避免依賴 `file://` 跨檔案儲存。片段包含教材全文，適合小型詞表，過大型教材可能遇到瀏覽器網址長度限制，建議改以靜態 HTTP 伺服器使用。原先直接開啟八款 HTML 的內建教材功能仍可使用。明確指定教材卻遺失、修訂不符或無效時顯示錯誤與返回操作，禁止開始。可用模式只檢查本階段三款的資料條件，目標欄位目前供教材記錄。
+
+共用教材驗收可執行 `node tests/shared-browser.cjs`，使用已安裝的 Microsoft Edge。既有 `node tests/browser.cjs` 另驗證八款遊戲與 11 個大廳入口。
+
 八款入口皆整合在原有 `index.html#english` 大廳，原有三款遊戲保留。
 
 | 遊戲 | 獨立入口 | 內容 |

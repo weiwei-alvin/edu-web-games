@@ -1,7 +1,7 @@
 /* Shared game UI; curriculum and pure scoring/geometry live in data.js/core.js. */
 (function(){
 'use strict';
-const C=window.G7Core,D=window.G7Data,$=id=>document.getElementById(id),kind=document.body.dataset.game;
+let D=window.G7Data;const C=window.G7Core,$=id=>document.getElementById(id),kind=document.body.dataset.game;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const meta={
 'vocabulary-matching':['單字配對大挑戰','Vocabulary Matching Challenge','每局隨機選 8–10 組。先點英文再點中文，或拖曳英文到中文卡。配對成功會鎖定並補充例句；全部完成即可過關。首次紀錄依每張英文卡第一次提交計算。'],
@@ -46,7 +46,7 @@ $('results').innerHTML=html;$('again').focus();}
 $('finish').onclick=complete;
 function after(okText,extra){S.waiting=true;S.deadline=null;$('next').hidden=false;feedback(okText,'ok',extra);$('next').focus();}
 function finishedBoard(){S.waiting=true;$('finish').hidden=false;feedback('全部完成！可以查看學習紀錄。','ok');}
-function start(){epoch++;clearInterval(ticker);S={stats:C.makeStats(),labels:{},groups:{},started:Date.now(),total:0,index:0,waiting:false,flips:0,matched:new Set(),selected:null,mode:$('mode')?.value||'normal',seconds:Number($('seconds')?.value||20),reviewCount:0};$('next').hidden=true;$('finish').hidden=true;$('stage').innerHTML='';show('play');feedback('準備好了，開始挑戰！');
+function start(){if(window.LessonContent && (new URLSearchParams(location.search).has('lesson') || location.hash.startsWith('#content='))) D=window.G7Data;epoch++;clearInterval(ticker);S={stats:C.makeStats(),labels:{},groups:{},started:Date.now(),total:0,index:0,waiting:false,flips:0,matched:new Set(),selected:null,mode:$('mode')?.value||'normal',seconds:Number($('seconds')?.value||20),reviewCount:0};$('next').hidden=true;$('finish').hidden=true;$('stage').innerHTML='';show('play');feedback('準備好了，開始挑戰！');
 if(kind==='vocabulary-matching'){S.pool=C.shuffle(D.pools.matching).slice(0,Number($('count').value));S.total=S.pool.length;initMatching(S.pool);}
 if(kind==='vocabulary-memory'){S.pool=C.shuffle(D.pools.memory).slice(0,Number($('count').value));S.total=S.pool.length;S.cards=C.shuffle(S.pool.flatMap(id=>[{id,side:'en'},{id,side:'zh'}]));S.open=[];S.busy=false;renderMemory();}
 if(kind==='vocabulary-typing'){S.queue=C.shuffle(D.pools.typing).slice(0,10).map(id=>({id}));S.total=10;S.review=[];S.reviewAdded=new Set();renderTyping();}
