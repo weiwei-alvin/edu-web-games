@@ -93,6 +93,14 @@
     const a = document.createElement('a'); a.href=url; a.download=data.lessonId + '-r' + data.revision + '.json'; a.click();
     setTimeout(() => URL.revokeObjectURL(url),1000);
   };
-  try { const saved=L.load(); if (!L.validate(saved).length) data=saved; } catch { /* An empty editor is valid on first visit. */ }
+  try {
+    // Restore unfinished drafts too: the editor saves on every keystroke, so a
+    // reload mid-edit must not discard the lesson. Games still validate before starting.
+    const saved = L.load();
+    if (saved && typeof saved === 'object' && !Array.isArray(saved) && Array.isArray(saved.words)) {
+      data = {...data, ...saved, goals:Array.isArray(saved.goals) ? saved.goals : data.goals};
+      data.words = saved.words.filter(w => w && typeof w === 'object');
+    }
+  } catch { /* An empty editor is valid on first visit. */ }
   render();
 })();

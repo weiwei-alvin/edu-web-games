@@ -20,6 +20,15 @@ const fileURL = p => 'file:///' + path.resolve(p).replace(/\\/g,'/');
     await page.getByRole('button',{name:'配對 8 題／組',exact:true}).waitFor();
     await page.waitForFunction(()=>document.querySelector('#words tr'));
   }
+  // Wait for the navigation to finish so assertions never run on the page being left.
+  async function openGame(game) {
+    await Promise.all([page.waitForURL(/vocabulary-/),page.getByRole('button',{name:game+' '+(game==='打字'?10:8)+' 題／組',exact:true}).click()]);
+    await page.waitForLoadState('load');
+  }
+  async function backToEditor() {
+    await Promise.all([page.waitForURL(/lesson-editor/),page.getByRole('link',{name:'返回教材頁'}).first().click()]);
+    await page.locator('#words tr').first().waitFor();
+  }
   async function solve(game) {
     await page.locator('#begin').click();
     if(game==='配對') {
@@ -46,16 +55,23 @@ const fileURL = p => 'file:///' + path.resolve(p).replace(/\\/g,'/');
     for(const editor of ['http://127.0.0.1:'+server.address().port+'/edu-web-games/lesson-editor/index.html',fileURL('lesson-editor/index.html')]) {
       await page.goto(editor);await importLesson(lesson);
       for(const game of ['配對','翻牌','打字']) {
-        await page.getByRole('button',{name:game+' '+(game==='打字'?10:8)+' 題／組',exact:true}).click();
-        await page.reload();assert.match(await page.locator('#source').innerText(),/自編十詞/);await solve(game);
-        await page.getByRole('link',{name:'返回教材頁'}).first().click();await page.locator('#words tr').first().waitFor();assert.equal(await page.locator('#words tr').count(),10);
+        await openGame(game);
+        await page.reload();await page.waitForLoadState('load');assert.match(await page.locator('#source').innerText(),/自編十詞/);await solve(game);
+        await backToEditor();assert.equal(await page.locator('#words tr').count(),10);
       }
       await page.getByLabel('第 1 筆 example',{exact:true}).fill('Updated example.');
       await page.reload();await page.locator('#words tr').first().waitFor();
       assert.equal(await page.getByLabel('第 1 筆 example',{exact:true}).inputValue(),'Updated example.');
+      // An unfinished draft (blank revision) must survive a reload instead of emptying the editor.
+      await page.locator('#revision').fill('');
+      await page.reload();await page.locator('#words tr').first().waitFor();
+      assert.equal(await page.locator('#words tr').count(),10);
+      assert.equal(await page.getByLabel('第 1 筆 example',{exact:true}).inputValue(),'Updated example.');
+      assert.equal(await page.getByRole('button',{name:'配對 8 題／組',exact:true}).isDisabled(),true);
+      await page.locator('#revision').fill('1');
       for(const game of ['配對','翻牌','打字']) {
-        await page.getByRole('button',{name:game+' '+(game==='打字'?10:8)+' 題／組',exact:true}).click();
-        assert.equal(await page.evaluate(()=>G7Data.words[0].example),'Updated example.');await page.getByRole('link',{name:'返回教材頁'}).first().click();await page.locator('#words tr').first().waitFor();
+        await openGame(game);
+        assert.equal(await page.evaluate(()=>G7Data.words[0].example),'Updated example.');await backToEditor();
       }
       const download=page.waitForEvent('download');await page.locator('#export').click();assert.match((await download).suggestedFilename(),/custom-demo/);
       console.log('PASS three games, reload, return, update, export: '+editor.split(':')[0]);
