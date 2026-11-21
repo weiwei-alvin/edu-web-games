@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "custom-fruit",
+  "revision": 1,
+  "publisherId": "custom",
+  "editionId": "self",
+  "grade": 7,
+  "book": 1,
+  "lesson": "01",
+  "title": "水果單字",
+  "sourceNote": "自編示例，非出版社課本內容",
+  "goals": [
+    "meaning-recognition",
+    "spelling"
+  ],
+  "words": [
+    {
+      "id": "apple",
+      "en": "apple",
+      "zh": "蘋果",
+      "example": "This is an apple.",
+      "exampleZh": "這是一個蘋果。"
+    },
+    {
+      "id": "pear",
+      "en": "pear",
+      "zh": "梨子",
+      "example": "This is a pear.",
+      "exampleZh": "這是一個梨子。"
+    },
+    {
+      "id": "banana",
+      "en": "banana",
+      "zh": "香蕉",
+      "example": "This is a banana.",
+      "exampleZh": "這是一個香蕉。"
+    },
+    {
+      "id": "orange",
+      "en": "orange",
+      "zh": "柳橙",
+      "example": "This is an orange.",
+      "exampleZh": "這是一個柳橙。"
+    },
+    {
+      "id": "grape",
+      "en": "grape",
+      "zh": "葡萄",
+      "example": "This is a grape.",
+      "exampleZh": "這是一個葡萄。"
+    },
+    {
+      "id": "lemon",
+      "en": "lemon",
+      "zh": "檸檬",
+      "example": "This is a lemon.",
+      "exampleZh": "這是一個檸檬。"
+    },
+    {
+      "id": "peach",
+      "en": "peach",
+      "zh": "桃子",
+      "example": "This is a peach.",
+      "exampleZh": "這是一個桃子。"
+    },
+    {
+      "id": "melon",
+      "en": "melon",
+      "zh": "甜瓜",
+      "example": "This is a melon.",
+      "exampleZh": "這是一個甜瓜。"
+    },
+    {
+      "id": "mango",
+      "en": "mango",
+      "zh": "芒果",
+      "example": "This is a mango.",
+      "exampleZh": "這是一個芒果。"
+    },
+    {
+      "id": "plum",
+      "en": "plum",
+      "zh": "李子",
+      "example": "This is a plum.",
+      "exampleZh": "這是一個李子。"
+    }
+  ]
+}
