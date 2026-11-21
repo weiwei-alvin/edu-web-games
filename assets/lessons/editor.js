@@ -2,8 +2,13 @@
   'use strict';
   const L = window.LessonContent;
   const $ = id => document.getElementById(id);
-  const fields = {lessonId:'教材 ID', revision:'修訂', publisherId:'出版社 ID', editionId:'教材版次', grade:'年級', book:'冊次', lesson:'課次', title:'教材名稱', sourceNote:'來源說明'};
+  // Teachers mostly edit the basic fields; identifiers live under 進階設定 with defaults.
+  const basic = {grade:'年級', book:'冊次', lesson:'課次', title:'教材名稱'};
+  const advanced = {lessonId:'教材 ID', revision:'修訂版本', publisherId:'出版社代碼', editionId:'版本代碼', sourceNote:'來源說明'};
+  const fields = {...basic, ...advanced};
   const numeric = ['revision','grade','book'];
+  const choices = {grade:[[7,'國一（7 年級）'],[8,'國二（8 年級）'],[9,'國三（9 年級）']], book:[1,2,3,4,5,6].map(n => [n,'第 ' + n + ' 冊'])};
+  const advancedKeys = [...Object.keys(advanced), 'goals'];
   let data = {schemaVersion:1,lessonId:'custom-' + Date.now(),revision:1,publisherId:'custom',editionId:'self',grade:7,book:1,lesson:'01',title:'自編教材',sourceNote:'教師自編',goals:['meaning-recognition','spelling'],words:[]};
   let sequence = 0;
   function readMetadata() {
@@ -35,15 +40,27 @@
       $('launch').append(row);
     }
     try { L.save(data); } catch { /* Launch reports storage failures; export remains available. */ }
+    // Never hide a problem inside the collapsed section.
+    if (L.validate(data).some(e => advancedKeys.some(k => e.startsWith(k + ' ')))) $('advanced').open = true;
+  }
+  function field(key, label) {
+    const el = document.createElement('label'), span = document.createElement('span');
+    let input;
+    if (choices[key]) {
+      input = document.createElement('select');
+      const options = choices[key].some(([v]) => v === data[key]) ? choices[key] : [...choices[key], [data[key], String(data[key])]];
+      for (const [value,text] of options) input.append(new Option(text, value));
+    } else {
+      input = document.createElement('input');
+      input.type = numeric.includes(key) ? 'number' : 'text';
+    }
+    span.textContent = label; input.id = key; input.value = data[key] ?? ''; input.oninput = status;
+    el.className = 'field field-' + key; el.append(span, input);
+    return el;
   }
   function render() {
-    $('metadata').replaceChildren();
-    for (const [key,label] of Object.entries(fields)) {
-      const el = document.createElement('label'), input = document.createElement('input');
-      el.textContent = label;
-      input.id = key; input.value = data[key]; input.type = numeric.includes(key) ? 'number' : 'text';
-      input.oninput = status; el.append(input); $('metadata').append(el);
-    }
+    $('metadata').replaceChildren(...Object.entries(basic).map(([k,l]) => field(k,l)));
+    $('metadataAdvanced').replaceChildren(...Object.entries(advanced).map(([k,l]) => field(k,l)));
     $('goals').value = data.goals.join(',');
     $('words').replaceChildren();
     data.words.forEach((word,i) => {
