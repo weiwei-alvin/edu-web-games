@@ -1,30 +1,13 @@
-<!doctype html>
-<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>共用教材</title><link rel="stylesheet" href="../assets/grade7/game.css"><style>
-main>.panel+.panel{margin-top:20px}
-.panel h2{margin-top:0}
-.meta-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.8fr) minmax(0,2fr);gap:12px 16px;align-items:end}
-.field{display:grid;gap:4px;margin:0;min-width:0}
-.field span{font-size:15px;font-weight:600;color:var(--muted)}
-.field input,.field select{width:100%;height:48px;min-height:0;padding:0 10px}
-#advanced{margin-top:16px;border-top:1px solid var(--line);padding-top:10px}
-#advanced summary{cursor:pointer;color:var(--blue);font-weight:600;padding:6px 0}
-#advanced .hint{margin:4px 0 12px;font-size:14px;color:var(--muted)}
-#advanced .meta-grid{grid-template-columns:repeat(auto-fill,minmax(12rem,1fr))}
-.field-sourceNote,.field-goals{grid-column:span 2}
-.block{display:grid;gap:6px;margin:0 0 12px}
-textarea{width:100%;min-height:9em;font:inherit;border:2px solid #c3cde2;border-radius:10px;padding:10px;box-sizing:border-box}
-.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0}
-td input{width:100%;min-width:7em}
-.table-scroll{overflow:auto}
-#errors{white-space:pre-line}
-#launch button{margin:.3em}
-#import{width:auto;max-width:100%;min-width:0}
-.row label,label.row{min-width:0;max-width:100%;margin:0}
-#advanced>.field-goals{margin-top:12px;max-width:40rem}
-@media(max-width:700px){.meta-grid{grid-template-columns:1fr 1fr}#advanced .meta-grid{grid-template-columns:1fr}.field-sourceNote,.field-goals{grid-column:auto}}
-</style></head>
-<body><header><a href="../index.html#english">回到大廳</a></header><main><h1>共用教材</h1><p>輸入一次，供配對、翻牌與打字共用。教材保留於本分頁，請匯出 JSON 保存。匯入與編輯的內容只在瀏覽器中使用。</p>
-<section class="panel"><h2>課別</h2><div id="metadata" class="meta-grid"></div>
-<details id="advanced"><summary>進階設定</summary><p class="hint">系統已自動填好，一般不需修改。匯入他人教材或要區分版本時再調整；內容有誤時會自動展開。</p><div id="metadataAdvanced" class="meta-grid"></div><label class="field field-goals"><span>學習目標代碼（逗號分隔）</span><input id="goals" value="meaning-recognition,spelling"></label></details></section>
-<section class="panel"><h2>輸入教材</h2><label class="block"><span>貼上英文與中文，每列以 Tab 分隔</span><textarea id="paste" placeholder="apple&#9;蘋果"></textarea></label><div class="row"><button id="preview">預覽詞表</button><label class="row">匯入 JSON<input id="import" type="file" accept=".json,application/json"></label></div><p id="errors" role="status"></p><div class="table-scroll"><table><thead><tr><th>ID</th><th>英文</th><th>中文</th><th>英文例句</th><th>中文例句</th><th>操作</th></tr></thead><tbody id="words"></tbody></table></div><button id="export">匯出 JSON</button></section>
-<section class="panel"><h2>選擇遊戲模式</h2><p>缺例句或有歧義的資料會在下方說明，補齊後可開始。</p><div id="launch"></div></section></main><script src="../assets/lessons/content.js"></script><script src="../assets/lessons/editor.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<title>已搬家｜課堂遊戲室</title>
+<link rel="canonical" href="https://weiweialvin.tech/games/classroom/lesson-editor/">
+<meta http-equiv="refresh" content="0; url=https://weiweialvin.tech/games/classroom/lesson-editor/">
+<script>location.replace("https://weiweialvin.tech/games/classroom/lesson-editor/"+location.search+location.hash);</script>
+</head>
+<body>
+<p>課堂遊戲室已搬到 <a href="https://weiweialvin.tech/games/classroom/lesson-editor/">https://weiweialvin.tech/games/classroom/lesson-editor/</a>，正在帶你過去…</p>
+</body>
+</html>

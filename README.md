@@ -1,8 +1,10 @@
+> **已搬家：** 遊戲現在放在 https://weiweialvin.tech/games/classroom/ ，原始碼在 [weiwei-alvin/weiwei-alvin.github.io](https://github.com/weiwei-alvin/weiwei-alvin.github.io/tree/main/games/classroom)。這個 repo 只保留舊網址的轉址頁，之後請到新位置修改。
+
 # 國一英文單字遊戲
 
 ## 教師共用教材（第一階段）
 
-從大廳「輸入共用教材」或 `lesson-editor/index.html` 進入。填寫課別後，貼上每列「英文 Tab 中文」並按預覽，再於表格補雙語例句。也可直接匯入 [十詞 JSON 範例](lessons/example.json)。同一份教材可啟動配對 8/10 組、翻牌 4/6/8 組與打字 10 題。修改表格後再次啟動即讀取更新內容。原型保留名稱不可作為詞條 ID，重複卡面、中文提示及缺例句均會提示並阻止啟動；系統不會代寫例句。
+從大廳「輸入共用教材」或[新站教材編輯器](https://weiweialvin.tech/games/classroom/lesson-editor/) 進入。填寫課別後，貼上每列「英文 Tab 中文」並按預覽，再於表格補雙語例句。也可直接匯入 [十詞 JSON 範例](https://weiweialvin.tech/games/classroom/lessons/example.json)。同一份教材可啟動配對 8/10 組、翻牌 4/6/8 組與打字 10 題。修改表格後再次啟動即讀取更新內容。原型保留名稱不可作為詞條 ID，重複卡面、中文提示及缺例句均會提示並阻止啟動；系統不會代寫例句。
 
 教材格式包含 `schemaVersion: 1`、穩定 `lessonId`、正整數 `revision`、`publisherId`、`editionId`、`grade`（7–9）、`book`（1–6）、文字 `lesson`、`title`、`sourceNote`、`goals` 陣列與 `words`。詞條包含穩定 `id`、`en`、`zh`、`example`、`exampleZh`。草稿可先缺例句並匯出，開局前需補齊。建議編輯後增加修訂號，並匯出 JSON 備份。
 
